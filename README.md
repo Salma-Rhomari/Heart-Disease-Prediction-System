@@ -5,7 +5,7 @@ Machine learning project predicting the presence of heart disease from clinical 
 ## Project status
 
 - [x] Phase 1 — EDA & Preprocessing
-- [ ] Phase 2 — Exploratory data analysis
+- [x] Phase 2 — Exploratory data analysis
 - [ ] Phase 3 — Model comparison & tuning
 - [ ] Phase 4 — Interpretability (SHAP)
 - [ ] Phase 5 — Deployment (Streamlit)
@@ -48,7 +48,3 @@ streamlit run app/streamlit_app.py
 ## Tech stack
 
 Python, pandas, scikit-learn, XGBoost, SHAP, Streamlit.
-
-## License
-
-MIT
