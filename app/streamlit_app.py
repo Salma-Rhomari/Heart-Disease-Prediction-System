@@ -6,8 +6,6 @@ import shap
 import matplotlib.pyplot as plt
 import matplotlib
 import plotly.graph_objects as go
-
-# ---------- Page config & style ----------
 st.set_page_config(page_title="Heart Disease Prediction", page_icon="", layout="wide")
 
 PRIMARY = "#1E5AA8"     
@@ -36,7 +34,6 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Load model & data ----------
 @st.cache_resource
 def load_model():
     return joblib.load('models/model.pkl')
@@ -56,7 +53,7 @@ def load_explainer():
 
 explainer = load_explainer()
 
-# ---------- Sidebar: model info ----------
+
 with st.sidebar:
     st.markdown(f"<h2 style='color:{DARK};'> Model Info</h2>", unsafe_allow_html=True)
     st.markdown("**Algorithm:** XGBoost (tuned)")
@@ -77,12 +74,11 @@ with st.sidebar:
     st.markdown("---")
     st.caption(" Educational/portfolio project — not a medical diagnosis tool.")
 
-# ---------- Main title ----------
 st.markdown(f"<h1 style='color:{DARK};'> Heart Disease Prediction System</h1>", unsafe_allow_html=True)
 st.markdown("Enter the patient's clinical parameters below to predict the likelihood of heart disease, with a full explanation of the prediction.")
 st.divider()
 
-# ---------- Input form ----------
+
 col1, col2 = st.columns(2)
 
 with col1:
@@ -118,9 +114,7 @@ with col2:
                          help="Result of the thalassemia blood disorder test")
 
 st.divider()
-
-# ---------- Prediction ----------
-if st.button("🔍 Predict", type="primary", use_container_width=True):
+if st.button(" Predict", type="primary", use_container_width=True):
     input_dict = {
         'id': 0,
         'age': age,
@@ -154,7 +148,6 @@ if st.button("🔍 Predict", type="primary", use_container_width=True):
 
     st.divider()
 
-    # ----- Result banner -----
     res_col1, res_col2 = st.columns([1, 1])
 
     with res_col1:
@@ -175,7 +168,7 @@ if st.button("🔍 Predict", type="primary", use_container_width=True):
             </div>
             """, unsafe_allow_html=True)
 
-    # ----- Gauge chart -----
+
     with res_col2:
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
@@ -198,9 +191,8 @@ if st.button("🔍 Predict", type="primary", use_container_width=True):
 
     st.caption("This tool is for educational/portfolio purposes only and is not a medical diagnosis.")
 
-    # ----- SHAP explanation for this patient -----
     st.divider()
-    st.subheader("🔎 Why this prediction? (SHAP explanation)")
+    st.subheader(" Why this prediction? (SHAP explanation)")
     st.markdown("Each bar shows how much a feature pushed the prediction toward **Disease** (blue, right) or **Healthy** (light blue, left) for this specific patient.")
 
     shap_values_patient = explainer(row)
@@ -210,6 +202,6 @@ if st.button("🔍 Predict", type="primary", use_container_width=True):
     fig, ax = plt.subplots(figsize=(9, 5))
     shap.plots.waterfall(shap_values_patient[0], show=False)
     for fc in ax.get_children():
-        pass  # waterfall colors are managed internally; see note below
+        pass 
     plt.tight_layout()
     st.pyplot(fig)
