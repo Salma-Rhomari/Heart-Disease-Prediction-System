@@ -2,20 +2,6 @@
 
 Machine learning project predicting the presence of heart disease from clinical patient data, using the combined UCI Heart Disease dataset (Cleveland, Hungary, Switzerland, VA Long Beach — 920 patients).
 
-## Project status
-
--  Phase 1 — EDA & Preprocessing
--  Phase 2 — Exploratory data analysis
--  Phase 3 — Model training & tuning (XGBoost)
--  Phase 4 — Interpretability (SHAP)
--  Phase 5 — Deployment (Streamlit)
--  Phase 6 — Documentation
-
-## Demo
-https://github.com/Salma-Rhomari/Heart-Disease-Prediction-System/issues/1#issue-5245377598
-
-The app predicts heart disease likelihood from patient inputs and explains each prediction with a SHAP breakdown showing exactly which factors drove the result.
-
 ## Dataset
 
 Combined UCI Heart Disease dataset (920 patients, 4 hospitals). Missingness is structural (hospital-dependent) rather than random, and `chol`/`trestbps` contain literal `0` values representing unmeasured data — both handled explicitly during preprocessing. See `notebooks/01_eda_preprocessing.ipynb` for details.
@@ -95,7 +81,3 @@ streamlit run app/streamlit_app.py
 ## Tech stack
 
 Python, pandas, scikit-learn, XGBoost, SHAP, Streamlit, Plotly.
-
-## License
-
-MIT
