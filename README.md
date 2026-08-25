@@ -12,13 +12,7 @@ Machine learning project predicting the presence of heart disease from clinical 
 -  Phase 6 — Documentation
 
 ## Demo
-
-
-
-
-<!-- https://github.com/Salma-Rhomari/Heart-Disease-Prediction-System/issues/1#issue-5245377598-->
-
-
+https://github.com/Salma-Rhomari/Heart-Disease-Prediction-System/issues/1#issue-5245377598
 
 The app predicts heart disease likelihood from patient inputs and explains each prediction with a SHAP breakdown showing exactly which factors drove the result.
 
