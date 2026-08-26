@@ -2,15 +2,6 @@
 
 Machine learning project predicting the presence of heart disease from clinical patient data, using the combined UCI Heart Disease dataset (Cleveland, Hungary, Switzerland, VA Long Beach — 920 patients).
 
-## Project status
-
-- Phase 1 — EDA & Preprocessing
-- Phase 2 — Exploratory data analysis
-- Phase 3 — Model training & tuning (XGBoost)
-- Phase 4 — Interpretability (SHAP)
-- Phase 5 — Deployment (Streamlit)
-- Phase 6 — Documentation
-
 ## Dataset
 
 Combined UCI Heart Disease dataset (920 patients, 4 hospitals). Missingness is structural (hospital-dependent) rather than random, and `chol`/`trestbps` contain literal `0` values representing unmeasured data — both handled explicitly during preprocessing. See `notebooks/01_eda_preprocessing.ipynb` for details.
@@ -52,7 +43,15 @@ Target: binary classification — presence (1) vs absence (0) of heart disease.
 
 See `notebooks/04_interpretability_shap.ipynb` for global and per-patient SHAP explanations.
 
+## App features
+
+- Interactive patient input form with tooltips explaining each clinical variable
+- Instant prediction with probability gauge
+- Per-patient SHAP waterfall explanation showing why the model made its prediction
+- Sidebar with live model performance stats
+
 ## Repository structure
+
 ├── data/
 │ ├── raw/ # original dataset
 │ └── processed/ # train/test splits after preprocessing
@@ -61,6 +60,7 @@ See `notebooks/04_interpretability_shap.ipynb` for global and per-patient SHAP e
 ├── models/ # serialized trained model
 ├── app/ # Streamlit demo app
 ├── reports/figures/ # exported plots
+├── .streamlit/ # app theme config
 └── docs/ # project spec (cahier des charges)
 
 
@@ -72,7 +72,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the notebooks in order (`notebooks/01_...` through `04_...`) to reproduce the full pipeline, or run the Streamlit app once available:
+Run the notebooks in order (`notebooks/01_...` through `04_...`) to reproduce the full pipeline, or run the Streamlit app:
 
 ```bash
 streamlit run app/streamlit_app.py
@@ -80,4 +80,4 @@ streamlit run app/streamlit_app.py
 
 ## Tech stack
 
-Python, pandas, scikit-learn, XGBoost, SHAP, Streamlit.
+Python, pandas, scikit-learn, XGBoost, SHAP, Streamlit, Plotly.
