@@ -4,14 +4,15 @@ import numpy as np
 import joblib
 import shap
 import matplotlib.pyplot as plt
-import matplotlib
+from matplotlib.patches import Patch
 import plotly.graph_objects as go
+
 st.set_page_config(page_title="Heart Disease Prediction", page_icon="", layout="wide")
 
-PRIMARY = "#1E5AA8"     
-LIGHT = "#5B9BD5"       
-PALE = "#DCEBFA"        
-DARK = "#0B2E52"        
+PRIMARY = "#1E5AA8"     # deep blue
+LIGHT = "#5B9BD5"       # mid blue
+PALE = "#DCEBFA"        # pale blue background
+DARK = "#0B2E52"        # near-navy text/dark accents
 
 st.markdown(f"""
 <style>
@@ -34,26 +35,68 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
+
 @st.cache_resource
 def load_model():
     return joblib.load('models/model.pkl')
 
+
 @st.cache_data
 def load_reference_data():
-    X_train = pd.read_csv('data/processed/X_train.csv')
-    return X_train
+    return pd.read_csv('data/processed/X_train.csv')
+
+
+@st.cache_resource
+def load_explainer(_model):
+    return shap.TreeExplainer(_model)
+
 
 model = load_model()
 X_train = load_reference_data()
 X_train_columns = X_train.columns.tolist()
-
-@st.cache_resource
-def load_explainer():
-    return shap.TreeExplainer(model)
-
-explainer = load_explainer()
+explainer = load_explainer(model)
 
 
+def plot_shap_waterfall_blue(shap_values_row, feature_names, base_value, prediction_value, max_display=10):
+    """Custom blue-only waterfall plot for a single SHAP explanation."""
+    values = shap_values_row
+    order = np.argsort(np.abs(values))[::-1][:max_display]
+
+    names = [feature_names[i] for i in order]
+    vals = [values[i] for i in order]
+
+    fig, ax = plt.subplots(figsize=(8, 5.5))
+    y_pos = np.arange(len(names))
+
+    colors = [PRIMARY if v > 0 else LIGHT for v in vals]
+    ax.barh(y_pos, vals, color=colors, height=0.6)
+
+    for i, v in enumerate(vals):
+        ax.text(v + (0.02 if v >= 0 else -0.02), i, f"{v:+.2f}",
+                va='center', ha='left' if v >= 0 else 'right',
+                fontsize=9, color=DARK, fontweight='bold')
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(names)
+    ax.invert_yaxis()
+    ax.axvline(0, color=DARK, linewidth=0.8)
+    ax.set_xlabel("Impact on prediction (SHAP value)")
+    ax.set_title(f"Base rate: {base_value:.2f}  →  This patient: {prediction_value:.2f}",
+                 fontsize=10, color=DARK)
+
+    legend_elements = [
+        Patch(facecolor=PRIMARY, label='Pushes toward Disease'),
+        Patch(facecolor=LIGHT, label='Pushes toward Healthy'),
+    ]
+    ax.legend(handles=legend_elements, loc='lower right', fontsize=8)
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.tight_layout()
+    return fig
+
+
+# ---------- Sidebar: model info ----------
 with st.sidebar:
     st.markdown(f"<h2 style='color:{DARK};'> Model Info</h2>", unsafe_allow_html=True)
     st.markdown("**Algorithm:** XGBoost (tuned)")
@@ -77,7 +120,6 @@ with st.sidebar:
 st.markdown(f"<h1 style='color:{DARK};'> Heart Disease Prediction System</h1>", unsafe_allow_html=True)
 st.markdown("Enter the patient's clinical parameters below to predict the likelihood of heart disease, with a full explanation of the prediction.")
 st.divider()
-
 
 col1, col2 = st.columns(2)
 
@@ -114,6 +156,7 @@ with col2:
                          help="Result of the thalassemia blood disorder test")
 
 st.divider()
+
 if st.button(" Predict", type="primary", use_container_width=True):
     input_dict = {
         'id': 0,
@@ -161,13 +204,10 @@ if st.button(" Predict", type="primary", use_container_width=True):
         else:
             st.markdown(f"""
             <div style='background-color:{LIGHT}; padding:1.5rem; border-radius:12px; text-align:center;'>
-                <h2 style='color:white; margin:0;'>
-                 
-             No Disease Likely</h2>
+                <h2 style='color:white; margin:0;'> No Disease Likely</h2>
                 <p style='color:white; font-size:1.1rem;'>Predicted probability of disease: {proba:.1%}</p>
             </div>
             """, unsafe_allow_html=True)
-
 
     with res_col2:
         fig_gauge = go.Figure(go.Indicator(
@@ -191,17 +231,35 @@ if st.button(" Predict", type="primary", use_container_width=True):
 
     st.caption("This tool is for educational/portfolio purposes only and is not a medical diagnosis.")
 
+
     st.divider()
     st.subheader(" Why this prediction? (SHAP explanation)")
-    st.markdown("Each bar shows how much a feature pushed the prediction toward **Disease** (blue, right) or **Healthy** (light blue, left) for this specific patient.")
+    st.markdown("Each bar shows how much a feature pushed the prediction toward **Disease** (dark blue) or **Healthy** (light blue) for this specific patient.")
 
     shap_values_patient = explainer(row)
 
-    blue_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("blue_scale", [LIGHT, PRIMARY])
-
-    fig, ax = plt.subplots(figsize=(9, 5))
-    shap.plots.waterfall(shap_values_patient[0], show=False)
-    for fc in ax.get_children():
-        pass 
-    plt.tight_layout()
+    fig = plot_shap_waterfall_blue(
+        shap_values_row=shap_values_patient.values[0],
+        feature_names=X_train_columns,
+        base_value=shap_values_patient.base_values[0],
+        prediction_value=shap_values_patient.base_values[0] + shap_values_patient.values[0].sum(),
+        max_display=10
+    )
     st.pyplot(fig)
+    age = st.number_input(
+    "Age",
+    min_value=18, max_value=100,
+    help="Patient's age in years"
+)
+
+cp = st.selectbox(
+    "Chest Pain Type",
+    options=["Typical Angina", "Atypical Angina", "Non-anginal Pain", "Asymptomatic"],
+    help="Type of chest pain experienced by the patient"
+)
+
+thalach = st.number_input(
+    "Max Heart Rate Achieved",
+    min_value=60, max_value=220,
+    help="Maximum heart rate achieved during exercise test"
+)
