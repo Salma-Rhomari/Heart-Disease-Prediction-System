@@ -265,20 +265,3 @@ if st.button(" Predict", type="primary", use_container_width=True):
         max_display=10
     )
     st.pyplot(fig)
-    age = st.number_input(
-    "Age",
-    min_value=18, max_value=100,
-    help="Patient's age in years"
-)
-
-cp = st.selectbox(
-    "Chest Pain Type",
-    options=["Typical Angina", "Atypical Angina", "Non-anginal Pain", "Asymptomatic"],
-    help="Type of chest pain experienced by the patient"
-)
-
-thalach = st.number_input(
-    "Max Heart Rate Achieved",
-    min_value=60, max_value=220,
-    help="Maximum heart rate achieved during exercise test"
-)
