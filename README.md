@@ -77,6 +77,19 @@ Run the notebooks in order (`notebooks/01_...` through `04_...`) to reproduce th
 ```bash
 streamlit run app/streamlit_app.py
 ```
+## Screenshots
+
+### Home & Model Info
+![Home](screenshots/home.png)
+
+### Patient Input Form
+![Input Form](screenshots/input_form.png)
+
+### Prediction Result
+![Prediction](screenshots/prediction.png)
+
+### SHAP Explanation
+![SHAP](screenshots/shap.png)
 
 ## Tech stack
 
