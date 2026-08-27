@@ -90,7 +90,8 @@ streamlit run app/streamlit_app.py
 
 ### SHAP Explanation
 ![SHAP](screenshots/shap.png)
-
+## Live Demo
+🔗 [Try the app here](https://heart-disease-predict-sys.streamlit.app/)
 ## Tech stack
 
 Python, pandas, scikit-learn, XGBoost, SHAP, Streamlit, Plotly.
