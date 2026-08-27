@@ -49,21 +49,6 @@ See `notebooks/04_interpretability_shap.ipynb` for global and per-patient SHAP e
 - Instant prediction with probability gauge
 - Per-patient SHAP waterfall explanation showing why the model made its prediction
 - Sidebar with live model performance stats
-
-## Repository structure
-
-├── data/
-│ ├── raw/ # original dataset
-│ └── processed/ # train/test splits after preprocessing
-├── notebooks/ # numbered, ordered analysis notebooks
-├── src/ # reusable preprocessing/training/prediction code
-├── models/ # serialized trained model
-├── app/ # Streamlit demo app
-├── reports/figures/ # exported plots
-├── .streamlit/ # app theme config
-└── docs/ # project spec (cahier des charges)
-
-
 ## Setup
 
 ```bash
