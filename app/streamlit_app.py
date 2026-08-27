@@ -14,6 +14,25 @@ LIGHT = "#5B9BD5"       # mid blue
 PALE = "#DCEBFA"        # pale blue background
 DARK = "#0B2E52"        # near-navy text/dark accents
 
+with st.expander(" Model Info & Performance", expanded=False):
+    st.markdown("""
+    This prediction is powered by an **XGBoost** classifier trained on the 
+    combined UCI Heart Disease dataset (Cleveland, Hungary, Switzerland, 
+    and VA Long Beach — 920 patients).
+    """)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Accuracy", "85%")
+    with col2:
+        st.metric("F1 Score", "0.87")
+    with col3:
+        st.metric("ROC-AUC", "0.91")  
+
+    st.caption(
+        " This tool is for educational/portfolio purposes only and is not "
+        "a substitute for professional medical diagnosis."
+    )
 st.markdown(f"""
 <style>
     .stApp {{ background-color: #F5F9FE; }}
